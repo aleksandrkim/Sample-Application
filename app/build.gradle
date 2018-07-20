@@ -1,8 +1,8 @@
 apply plugin: 'com.android.application'
 
 apply plugin: 'kotlin-android'
-
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion 27
@@ -28,6 +28,7 @@ ext {
     rxAndroidVersion = '2.0.2'
     retrofitVersion = '2.4.0'
     okhttpVersion = '3.10.0'
+    roomVersion = '1.1.1'
 }
 
 dependencies {
@@ -57,6 +58,13 @@ dependencies {
     //region RxJava
     implementation "io.reactivex.rxjava2:rxjava:$rxJavaVersion"
     implementation "io.reactivex.rxjava2:rxandroid:$rxAndroidVersion"
+    //endregion
+
+    //region Room
+    implementation "android.arch.persistence.room:runtime:$roomVersion"
+    implementation "android.arch.lifecycle:livedata:$roomVersion"
+    annotationProcessor "android.arch.persistence.room:compiler:$roomVersion"
+    kapt "android.arch.persistence.room:compiler:$roomVersion"
     //endregion
 
     testImplementation 'junit:junit:4.12'

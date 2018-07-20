@@ -5,7 +5,6 @@
     android:name="aleksandrkim.sampleapplication.FeedFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="16dp"
-    android:layout_marginRight="16dp"
+    android:layout_margin="4dp"
     tools:context=".feed.FeedFragment"
     tools:listitem="@layout/feed_item" />

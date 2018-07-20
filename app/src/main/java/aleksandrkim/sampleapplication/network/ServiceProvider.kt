@@ -1,6 +1,5 @@
 package aleksandrkim.sampleapplication.network
 
-import android.util.Log
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -24,8 +23,6 @@ object ServiceProvider {
     }
 
     private val retrofitInstance: Retrofit by lazy {
-        Log.d(TAG, "retrofit instance init")
-
         Retrofit.Builder()
             .baseUrl(ApiConstants.baseUrl)
             .addConverterFactory(MoshiConverterFactory.create())
