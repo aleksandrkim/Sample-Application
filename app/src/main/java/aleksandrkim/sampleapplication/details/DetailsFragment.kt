@@ -72,10 +72,6 @@ class DetailsFragment : Fragment() {
         menu.clear()
         inflater.inflate(R.menu.details_menu, menu)
         starIcon = menu.getItem(0)
-
-//        detailsFragmentVM.isStarred.reObserve(this, Observer {
-//            menu.getItem(0).icon.setTint(if (it == true) Color.YELLOW else Color.WHITE)
-//        })
         super.onCreateOptionsMenu(menu, inflater)
     }
 

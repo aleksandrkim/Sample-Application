@@ -1,7 +1,6 @@
 package aleksandrkim.sampleapplication.db.dao
 
 import android.arch.persistence.room.*
-import android.arch.persistence.room.OnConflictStrategy.FAIL
 import android.arch.persistence.room.OnConflictStrategy.IGNORE
 
 /**
@@ -10,7 +9,7 @@ import android.arch.persistence.room.OnConflictStrategy.IGNORE
 @Dao
 abstract class BaseDao<T> {
 
-    @Insert(onConflict = FAIL)
+    @Insert(onConflict = IGNORE)
     abstract fun add(t: T) : Long
 
     @Insert(onConflict = IGNORE)

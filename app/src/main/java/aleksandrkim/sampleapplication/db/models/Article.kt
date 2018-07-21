@@ -9,7 +9,9 @@ import android.support.v7.util.DiffUtil
  * Created by Aleksandr Kim on 20 Jul, 2018 8:59 PM for SampleApplication
  */
 
-@Entity(tableName = Article.TABLE_NAME, indices = [Index("id")])
+@Entity(
+    tableName = Article.TABLE_NAME,
+    indices = [(Index("id")), (Index(value = ["url", "publishedAt"], unique = true))])
 data class Article(val author: String?,
                    val title: String = "",
                    val description: String? = "",
