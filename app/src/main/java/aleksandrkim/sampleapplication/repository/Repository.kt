@@ -34,6 +34,11 @@ class Repository(private val appDatabase: AppDatabase) {
             })
     }
 
+    fun getArticleById(id: Int): LiveData<Article?> {
+        Log.d(TAG, "getArticleById: $id")
+        return appDatabase.articleDao().getById(id)
+    }
+
     private fun updateArticlesDb(list: List<Article>) {
         Log.d(TAG, "updateArticlesDb: " + list.size)
         appDatabase.articleDao().cleanUpdate(list)

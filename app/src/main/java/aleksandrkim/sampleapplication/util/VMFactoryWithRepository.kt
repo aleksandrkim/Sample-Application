@@ -1,5 +1,6 @@
 package aleksandrkim.sampleapplication.util
 
+import aleksandrkim.sampleapplication.details.DetailsFragmentVM
 import aleksandrkim.sampleapplication.feed.FeedFragmentVM
 import aleksandrkim.sampleapplication.repository.Repository
 import android.arch.lifecycle.ViewModel
@@ -11,9 +12,10 @@ import android.arch.lifecycle.ViewModelProvider
 class VMFactoryWithRepository(private val repository: Repository) : ViewModelProvider.NewInstanceFactory() {
 
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return if (modelClass == FeedFragmentVM::class.java)
-            FeedFragmentVM(repository) as T
-        else
-            super.create(modelClass)
+        return when (modelClass) {
+            FeedFragmentVM::class.java ->       FeedFragmentVM(repository) as T
+            DetailsFragmentVM::class.java ->    DetailsFragmentVM(repository) as T
+            else ->                             super.create(modelClass)
+        }
     }
 }

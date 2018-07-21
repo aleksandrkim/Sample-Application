@@ -1,14 +1,15 @@
 package aleksandrkim.sampleapplication.feed
 
+import aleksandrkim.sampleapplication.NavigationActivity
 import aleksandrkim.sampleapplication.R
 import aleksandrkim.sampleapplication.db.AppDatabase
+import aleksandrkim.sampleapplication.details.DetailsFragment
 import aleksandrkim.sampleapplication.repository.Repository
 import aleksandrkim.sampleapplication.util.OnListItemClicked
 import aleksandrkim.sampleapplication.util.VMFactoryWithRepository
 import aleksandrkim.sampleapplication.util.reObserve
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
-import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.DividerItemDecoration
@@ -21,34 +22,31 @@ import android.widget.LinearLayout
 import kotlinx.android.synthetic.main.fragment_feed.*
 
 
-class FeedFragment : Fragment() {
-    private var columnCount = 1
+class FeedFragment : Fragment(), OnListItemClicked {
+//    private var listener: OnListItemClicked? = null
 
-    private var listener: OnListItemClicked? = null
+    private val navigationActivity by lazy { requireActivity() as NavigationActivity }
 
     private val feedFragmentVM by lazy {
         ViewModelProviders.of(this, VMFactoryWithRepository(Repository.getInstance
             (AppDatabase.getInstance(requireContext().applicationContext)))).get(FeedFragmentVM::class.java)
     }
 
-    private val feedAdapter: FeedAdapter by lazy { FeedAdapter(null, listener) }
+    private val feedAdapter: FeedAdapter by lazy { FeedAdapter(null, this) }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        if (context is OnListItemClicked)
-            listener = context
-        else
-            throw RuntimeException(context.toString() + " must implement OnListItemClicked")
-    }
+//    override fun onAttach(context: Context) {
+//        super.onAttach(context)
+//        if (context is OnListItemClicked)
+//            listener = context
+//        else
+//            throw RuntimeException(context.toString() + " must implement OnListItemClicked")
+//    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         retainInstance = true
         Log.d(TAG, "onCreate: ")
 
-        arguments?.let {
-            columnCount = it.getInt(ARG_COLUMN_COUNT)
-        }
         init()
     }
 
@@ -82,26 +80,35 @@ class FeedFragment : Fragment() {
         feedFragmentVM.topAllLive.reObserve(this, Observer { articles ->
             articles?.let {
                 feedAdapter.setList(it)
-                Log.d(TAG, "subscribeToFeed: " + it.size)
             }
         })
     }
 
-    override fun onDetach() {
-        super.onDetach()
-        listener = null
+//    override fun onDetach() {
+//        super.onDetach()
+//        listener = null
+//    }
+
+    override fun onClick(id: Int) {
+        val detailsFragment = DetailsFragment.newInstance(id)
+        navigationActivity.launchFragment(detailsFragment, DetailsFragment.TAG)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        Log.d(TAG, "onSaveInstanceState: ")
+
+        super.onSaveInstanceState(outState)
     }
 
     companion object {
         const val TAG = "FeedFragment"
-        const val ARG_COLUMN_COUNT = "column-count"
 
         @JvmStatic
-        fun newInstance(columnCount: Int) =
+        fun newInstance() =
             FeedFragment().apply {
-                arguments = Bundle().apply {
-                    putInt(ARG_COLUMN_COUNT, columnCount)
-                }
+                Log.d(TAG, "newInstance: ")
+
+                arguments = Bundle().apply {}
             }
     }
 }

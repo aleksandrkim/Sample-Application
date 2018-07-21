@@ -19,10 +19,10 @@ abstract class ArticleDao : BaseDao<Article>() {
     abstract fun getAllFeed(): LiveData<List<Article>>
 
     @Query("SELECT * FROM " + Article.TABLE_NAME + " WHERE id = :id")
-    abstract fun getById(id: Int): LiveData<Article>
+    abstract fun getById(id: Int): LiveData<Article?>
 
 //    @Query("SELECT * FROM " + Article.TABLE_NAME + " WHERE id = :id")
-//    abstract fun getNoteById(id: Int): Article?
+//    abstract fun getArticleById(id: Int): Article?
 //
 //    @Query("SELECT * FROM " + Article.TABLE_NAME + " ORDER BY createdTime DESC LIMIT 1")
 //    abstract fun getLatestNote(): Article

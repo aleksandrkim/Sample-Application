@@ -24,7 +24,9 @@ class FeedAdapter(private var list: List<Article>?,
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         list?.get(position)?.let { article ->
             holder.bind(article)
-            holder.view.setOnClickListener { clickListener?.onClick(article.id) }
+            holder.view.setOnClickListener ({
+                clickListener?.onClick(article.id)
+            })
         }
     }
 

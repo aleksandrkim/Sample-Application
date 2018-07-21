@@ -37,7 +37,7 @@ data class Article(var author: String?,
                 }
 
                 override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-                    return list[oldItemPosition].url == newList[newItemPosition].url
+                    return list[oldItemPosition].id == newList[newItemPosition].id
                 }
 
                 override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
