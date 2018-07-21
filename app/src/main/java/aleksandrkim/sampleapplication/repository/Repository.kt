@@ -12,7 +12,7 @@ import io.reactivex.schedulers.Schedulers
 /**
  * Created by Aleksandr Kim on 20 Jul, 2018 9:48 PM for SampleApplication
  */
-class Repository(val appDatabase: AppDatabase) {
+class Repository(private val appDatabase: AppDatabase) {
 
     private val topHeadlinesApi: TopHeadlinesApi by lazy {
         ServiceProvider.getService(TopHeadlinesApi::class.java)
@@ -29,7 +29,7 @@ class Repository(val appDatabase: AppDatabase) {
             .map { t -> t.articles }
             .subscribeOn(Schedulers.io())
             .subscribe ({ list ->
-                    Log.d(Companion.TAG, "fetchNewArticles: ")
+                    Log.d(TAG, "fetchNewArticles: ")
                     updateArticlesDb(list)
             })
     }

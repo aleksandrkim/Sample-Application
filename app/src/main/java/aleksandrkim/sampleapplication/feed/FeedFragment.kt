@@ -1,7 +1,10 @@
 package aleksandrkim.sampleapplication.feed
 
 import aleksandrkim.sampleapplication.R
+import aleksandrkim.sampleapplication.db.AppDatabase
+import aleksandrkim.sampleapplication.repository.Repository
 import aleksandrkim.sampleapplication.util.OnListItemClicked
+import aleksandrkim.sampleapplication.util.VMFactoryWithRepository
 import aleksandrkim.sampleapplication.util.reObserve
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
@@ -23,7 +26,11 @@ class FeedFragment : Fragment() {
 
     private var listener: OnListItemClicked? = null
 
-    private val feedFragmentVM by lazy { ViewModelProviders.of(this).get(FeedFragmentVM::class.java) }
+    private val feedFragmentVM by lazy {
+        ViewModelProviders.of(this, VMFactoryWithRepository(Repository.getInstance
+            (AppDatabase.getInstance(requireContext().applicationContext)))).get(FeedFragmentVM::class.java)
+    }
+
     private val feedAdapter: FeedAdapter by lazy { FeedAdapter(null, listener) }
 
     override fun onAttach(context: Context) {
