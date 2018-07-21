@@ -25,8 +25,6 @@ import kotlinx.android.synthetic.main.fragment_feed.*
 class FeedFragment : Fragment(), OnListItemClicked {
 //    private var listener: OnListItemClicked? = null
 
-    private val navigationActivity by lazy { requireActivity() as NavigationActivity }
-
     private val feedFragmentVM by lazy {
         ViewModelProviders.of(this, VMFactoryWithRepository(Repository.getInstance
             (AppDatabase.getInstance(requireContext().applicationContext)))).get(FeedFragmentVM::class.java)
@@ -91,7 +89,7 @@ class FeedFragment : Fragment(), OnListItemClicked {
 
     override fun onClick(id: Int) {
         val detailsFragment = DetailsFragment.newInstance(id)
-        navigationActivity.launchFragment(detailsFragment, DetailsFragment.TAG)
+        (requireActivity() as NavigationActivity).launchFragment(detailsFragment, DetailsFragment.TAG)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

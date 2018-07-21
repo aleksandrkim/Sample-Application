@@ -1,15 +1,19 @@
 package aleksandrkim.sampleapplication
 
 import aleksandrkim.sampleapplication.feed.FeedFragment
+import aleksandrkim.sampleapplication.util.OnListItemClicked
+import aleksandrkim.sampleapplication.util.setTextAndShow
 import android.os.Bundle
 import android.os.PersistableBundle
+import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.widget.Toast
+import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity(), NavigationActivity {
+class MainActivity : AppCompatActivity(), OnListItemClicked, NavigationActivity {
 
     private lateinit var shortToast: Toast
 
@@ -20,36 +24,35 @@ class MainActivity : AppCompatActivity(), NavigationActivity {
         setContentView(R.layout.activity_main)
         shortToast = Toast.makeText(this, "", Toast.LENGTH_SHORT)
 
-//        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
+        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
 
         if (savedInstanceState == null)
-            goToFeed()
-//            navigation.selectedItemId = R.id.navigation_home
+            navigation.selectedItemId = R.id.navigation_home
 
     }
 
-//    private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
-//        return@OnNavigationItemSelectedListener when (item.itemId) {
-//            R.id.navigation_home -> {
-//                shortToast.setTextAndShow(R.string.title_home)
-////                hideCurrentFragment()
-////                showFragmentByTag(FeedFragment.TAG)
-//                goToFeed()
-//                true
-//            }
-//            R.id.navigation_dashboard -> {
-//                shortToast.setTextAndShow(R.string.title_dashboard)
-////                hideCurrentFragment()
-//                true
-//            }
-//            R.id.navigation_notifications -> {
-//                shortToast.setTextAndShow(R.string.title_notifications)
-////                hideCurrentFragment()
-//                true
-//            }
-//            else -> false
-//        }
-//    }
+    private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
+        return@OnNavigationItemSelectedListener when (item.itemId) {
+            R.id.navigation_home -> {
+                shortToast.setTextAndShow(R.string.title_home)
+//                hideCurrentFragment()
+//                showFragmentByTag(FeedFragment.TAG)
+                goToFeed()
+                true
+            }
+            R.id.navigation_dashboard -> {
+                shortToast.setTextAndShow(R.string.title_dashboard)
+//                hideCurrentFragment()
+                true
+            }
+            R.id.navigation_notifications -> {
+                shortToast.setTextAndShow(R.string.title_notifications)
+//                hideCurrentFragment()
+                true
+            }
+            else -> false
+        }
+    }
 
 //    private fun addInitialFragments() {
 //        Log.d(TAG, "addInitialFragments: ")
@@ -123,11 +126,6 @@ class MainActivity : AppCompatActivity(), NavigationActivity {
 
     override fun launchFragment(fragment: Fragment, tag: String) {
         Log.d(TAG, "launchFragment: $tag")
-//        var target = fragment
-//        supportFragmentManager.findFragmentByTag(tag)?.let {
-//            target = it
-//            Log.d(TAG, "launchFragment found by TAG")
-//        }
 
         supportFragmentManager.beginTransaction()
             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
@@ -136,20 +134,20 @@ class MainActivity : AppCompatActivity(), NavigationActivity {
             .commit()
     }
 
-//    override fun onClick(id: Int) {
-//        shortToast.setTextAndShow(id.toString())
+    override fun onClick(id: Int) {
+        shortToast.setTextAndShow(id.toString())
 //        goToDetails(id)
-//    }
+    }
 
-//    private fun replaceFragmentWithBackstack(fragment: Fragment, tag: String) {
-//        Log.d(TAG, "replaceFragmentWithBackstack: ")
-//
-//        supportFragmentManager.beginTransaction()
-//            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-//            .add(R.id.frame, fragment, tag)
-//            .addToBackStack(tag)
-//            .commit()
-//    }
+    private fun replaceFragmentWithBackstack(fragment: Fragment, tag: String) {
+        Log.d(TAG, "replaceFragmentWithBackstack: ")
+
+        supportFragmentManager.beginTransaction()
+            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+            .add(R.id.frame, fragment, tag)
+            .addToBackStack(tag)
+            .commit()
+    }
 
     private fun replaceFragmentNoBackStack(fragment: Fragment, tag: String) {
         supportFragmentManager.beginTransaction()
