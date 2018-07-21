@@ -1,7 +1,8 @@
 package aleksandrkim.sampleapplication
 
 import aleksandrkim.sampleapplication.feed.FeedFragment
-import aleksandrkim.sampleapplication.feed.OnListItemClicked
+import aleksandrkim.sampleapplication.util.OnListItemClicked
+import aleksandrkim.sampleapplication.util.setTextAndShow
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.Fragment
@@ -11,14 +12,7 @@ import android.util.Log
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 
-fun Toast.setTextAndShow(text: String) {
-    setText(text); show()
-}
-fun Toast.setTextAndShow(textId: Int) {
-    setText(textId); show()
-}
-
-class MainActivity : AppCompatActivity(), OnListItemClicked {
+class MainActivity : AppCompatActivity(), OnListItemClicked, NavigationActivity {
 
     private lateinit var shortToast: Toast
 
@@ -27,11 +21,11 @@ class MainActivity : AppCompatActivity(), OnListItemClicked {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        shortToast = Toast.makeText(this,"", Toast.LENGTH_SHORT)
+        shortToast = Toast.makeText(this, "", Toast.LENGTH_SHORT)
 
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
 
-        addInitialFragments()
+        savedInstanceState ?: addInitialFragments()
     }
 
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
@@ -57,18 +51,19 @@ class MainActivity : AppCompatActivity(), OnListItemClicked {
     }
 
     private fun addInitialFragments() {
+        Log.d(TAG, "addInitialFragments: ")
+        val feedFragment = FeedFragment.newInstance(1)
+
         currentFragment = supportFragmentManager.run {
             beginTransaction()
-                .add(R.id.frame, FeedFragment.newInstance(1), FeedFragment.TAG)
+                .add(R.id.frame, feedFragment, FeedFragment.TAG)
                 .commitNow()
 
             findFragmentByTag(FeedFragment.TAG)
         }
-        Log.d(TAG, "addInitialFragments: ")
-
     }
 
-    private fun showFragmentByTag(tag: String) {
+    override fun showFragmentByTag(tag: String) {
         Log.d(TAG, "showFragmentByTag: $tag")
 
         val fragment = supportFragmentManager.findFragmentByTag(tag)
@@ -81,7 +76,18 @@ class MainActivity : AppCompatActivity(), OnListItemClicked {
         currentFragment = fragment
     }
 
-    private fun hideCurrentFragment() {
+    override fun hideFragmentByTag(tag: String) {
+        Log.d(TAG, "hideFragmentByTag: $tag")
+
+        val fragment = supportFragmentManager.findFragmentByTag(tag)
+
+        supportFragmentManager.beginTransaction()
+            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+            .hide(fragment)
+            .commit()
+    }
+
+    override fun hideCurrentFragment() {
         Log.d(TAG, "hideCurrentFragment: ")
 
         currentFragment = currentFragment?.let {

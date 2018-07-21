@@ -14,10 +14,14 @@ data class Article(var author: String?,
                    val title: String = "",
                    val description: String? = "",
                    val url: String,
-                   val ultToImage: String?,
+                   val urlToImage: String?,
                    val publishedAt: String,
                    @PrimaryKey(autoGenerate = true)
                    val id: Int) {
+
+    fun sameAs(other: Article): Boolean =
+        author == other.author && title == other.title && description == other.description &&
+                url == other.url && urlToImage == other.urlToImage && publishedAt == other.publishedAt
 
     companion object {
         const val TABLE_NAME = "articles"
@@ -33,11 +37,11 @@ data class Article(var author: String?,
                 }
 
                 override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-                    return list[oldItemPosition].id == newList[newItemPosition].id
+                    return list[oldItemPosition].url == newList[newItemPosition].url
                 }
 
                 override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-                    return list[oldItemPosition] == newList[newItemPosition]
+                    return list[oldItemPosition].sameAs(newList[newItemPosition])
                 }
             })
     }

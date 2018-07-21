@@ -1,4 +1,4 @@
-package aleksandrkim.sampleapplication.feed
+package aleksandrkim.sampleapplication.util
 
 /**
  * Created by Aleksandr Kim on 20 Jul, 2018 11:14 PM for SampleApplication

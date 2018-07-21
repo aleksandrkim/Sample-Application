@@ -41,4 +41,5 @@ abstract class ArticleDao : BaseDao<Article>() {
 
     @Query("SELECT COUNT(*) FROM " + Article.TABLE_NAME)
     abstract override fun count(): Int
+
 }

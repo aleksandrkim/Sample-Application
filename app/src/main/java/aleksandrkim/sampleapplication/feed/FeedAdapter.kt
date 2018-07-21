@@ -2,7 +2,9 @@ package aleksandrkim.sampleapplication.feed
 
 import aleksandrkim.sampleapplication.R
 import aleksandrkim.sampleapplication.db.models.Article
+import aleksandrkim.sampleapplication.util.OnListItemClicked
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,8 +15,6 @@ import kotlinx.android.synthetic.main.feed_item.view.*
 class FeedAdapter(private var list: List<Article>?,
                   private val clickListener: OnListItemClicked?)
     : RecyclerView.Adapter<FeedAdapter.ViewHolder>() {
-
-    val TAG = "FeedAdapter"
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.feed_item, parent, false)
@@ -33,9 +33,12 @@ class FeedAdapter(private var list: List<Article>?,
             this.list = newList
             notifyItemRangeInserted(0, newList.size)
         } else {
-            this.list = newList
-            Article.getDiffResult(list!!, newList).dispatchUpdatesTo(this)
+            Article.getDiffResult(list!!, newList).run {
+                list = newList
+                dispatchUpdatesTo(this@FeedAdapter)
+            }
         }
+        Log.d(TAG, "setList: " + newList.size)
     }
 
     override fun getItemCount(): Int = list?.size ?: 0
@@ -50,9 +53,9 @@ class FeedAdapter(private var list: List<Article>?,
             title.text = article.title
             content.text = article.description
         }
+    }
 
-        override fun toString(): String {
-            return super.toString() + " '" + content.text + "'"
-        }
+    companion object {
+        const val TAG = "FeedAdapter"
     }
 }

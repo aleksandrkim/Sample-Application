@@ -13,7 +13,6 @@ import io.reactivex.schedulers.Schedulers
  * Created by Aleksandr Kim on 20 Jul, 2018 9:48 PM for SampleApplication
  */
 class Repository(val appDatabase: AppDatabase) {
-    val TAG = "Repository"
 
     private val topHeadlinesApi: TopHeadlinesApi by lazy {
         ServiceProvider.getService(TopHeadlinesApi::class.java)
@@ -21,23 +20,27 @@ class Repository(val appDatabase: AppDatabase) {
 
     fun getTopHeadlinesAll(): LiveData<List<Article>> {
         Log.d(TAG, "getTopHeadlinesAll: ")
-        fetchNewArticles()
         return appDatabase.articleDao().getAllFeed()
     }
 
-    private fun fetchNewArticles() {
+    fun fetchNewArticles() {
         Log.d(TAG, "fetchNewArticles: ")
         topHeadlinesApi.getAllEng()
             .map { t -> t.articles }
             .subscribeOn(Schedulers.io())
-            .subscribe { list -> saveNewArticles(list) }
+            .subscribe ({ list ->
+                    Log.d(Companion.TAG, "fetchNewArticles: ")
+                    updateArticlesDb(list)
+            })
     }
 
-    private fun saveNewArticles(list: List<Article>) {
-        Log.d(TAG, "saveNewArticles: " + list.size)
+    private fun updateArticlesDb(list: List<Article>) {
+        Log.d(TAG, "updateArticlesDb: " + list.size)
         appDatabase.articleDao().cleanUpdate(list)
     }
 
-    companion object : SingletonHolder<AppDatabase, Repository>(::Repository)
+    companion object : SingletonHolder<AppDatabase, Repository>(::Repository) {
+        const val TAG = "Repository"
+    }
 
 }
