@@ -1,7 +1,6 @@
 package aleksandrkim.sampleapplication
 
 import aleksandrkim.sampleapplication.feed.FeedFragment
-import aleksandrkim.sampleapplication.util.OnListItemClicked
 import aleksandrkim.sampleapplication.util.setTextAndShow
 import android.os.Bundle
 import android.os.PersistableBundle
@@ -13,11 +12,9 @@ import android.util.Log
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity(), OnListItemClicked, NavigationActivity {
+class MainActivity : AppCompatActivity(), NavigationActivity {
 
     private lateinit var shortToast: Toast
-
-//    private var currentFragment: Fragment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,8 +32,7 @@ class MainActivity : AppCompatActivity(), OnListItemClicked, NavigationActivity 
         return@OnNavigationItemSelectedListener when (item.itemId) {
             R.id.navigation_home -> {
                 shortToast.setTextAndShow(R.string.title_home)
-//                hideCurrentFragment()
-//                showFragmentByTag(FeedFragment.TAG)
+                clearBackStack()
                 goToFeed()
                 true
             }
@@ -45,60 +41,16 @@ class MainActivity : AppCompatActivity(), OnListItemClicked, NavigationActivity 
 //                hideCurrentFragment()
                 true
             }
-            R.id.navigation_notifications -> {
-                shortToast.setTextAndShow(R.string.title_notifications)
-//                hideCurrentFragment()
-                true
-            }
             else -> false
         }
     }
 
-//    private fun addInitialFragments() {
-//        Log.d(TAG, "addInitialFragments: ")
-//        val feedFragment = FeedFragment.newInstance()
-//
-//        currentFragment = supportFragmentManager.run {
-//            beginTransaction()
-//                .add(R.id.frame, feedFragment, FeedFragment.TAG)
-//                .commitNow()
-//
-//            findFragmentByTag(FeedFragment.TAG)
-//        }
-//    }
-
-//    override fun showFragmentByTag(tag: String) {
-//        Log.d(TAG, "showFragmentByTag: $tag")
-//
-//        val fragment = supportFragmentManager.findFragmentByTag(tag)
-//
-//        supportFragmentManager.beginTransaction()
-//            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-//            .show(fragment)
-//            .commit()
-//
-//        currentFragment = fragment
-//    }
-
-//    override fun hideFragmentByTag(tag: String) {
-//        Log.d(TAG, "hideFragmentByTag: $tag")
-//
-//        val fragment = supportFragmentManager.findFragmentByTag(tag)
-//
-//        supportFragmentManager.beginTransaction()
-//            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-//            .hide(fragment)
-//            .commit()
-//    }
-//
-//    override fun hideCurrentFragment() {
-//        Log.d(TAG, "hideCurrentFragment: ")
-//
-//        currentFragment = currentFragment?.let {
-//            supportFragmentManager.beginTransaction().hide(it).commit()
-//            null
-//        }
-//    }
+    private fun clearBackStack() {
+        Log.d(TAG, "clearBackStack: " + supportFragmentManager.backStackEntryCount)
+        while (supportFragmentManager.backStackEntryCount > 0)
+            supportFragmentManager.popBackStackImmediate()
+        Log.d(TAG, "clearBackStack: " + supportFragmentManager.backStackEntryCount)
+    }
 
     override fun goToFeed() {
         Log.d(TAG, "goToFeed fragments size: " + supportFragmentManager.fragments.size)
@@ -107,36 +59,15 @@ class MainActivity : AppCompatActivity(), OnListItemClicked, NavigationActivity 
         replaceFragmentNoBackStack(feedFragment, FeedFragment.TAG)
     }
 
-//    override fun goToDetails(id: Int) {
-//        Log.d(TAG, "goToDetails fragments size: " + supportFragmentManager.fragments.size)
-//
-////        val detailsFragment = supportFragmentManager.findFragmentByTag(DetailsFragment.TAG) ?: DetailsFragment.newInstance(id)
-////        replaceFragmentWithBackstack(detailsFragment, DetailsFragment.TAG)
-//        try {
-//            supportFragmentManager.beginTransaction()
-//                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-//                .replace(R.id.frame, DetailsFragment.newInstance(id),
-//                    DetailsFragment.TAG)
-//                .addToBackStack(DetailsFragment.TAG)
-//                .commit()
-//        } catch (ex: Exception) {
-//            Log.d(TAG, ex.toString())
-//        }
-//    }
-
     override fun launchFragment(fragment: Fragment, tag: String) {
         Log.d(TAG, "launchFragment: $tag")
+        val target = supportFragmentManager.findFragmentByTag(tag) ?: fragment
 
         supportFragmentManager.beginTransaction()
             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-            .replace(R.id.frame, fragment, tag)
+            .replace(R.id.frame, target, tag)
             .addToBackStack(tag)
             .commit()
-    }
-
-    override fun onClick(id: Int) {
-        shortToast.setTextAndShow(id.toString())
-//        goToDetails(id)
     }
 
     private fun replaceFragmentWithBackstack(fragment: Fragment, tag: String) {

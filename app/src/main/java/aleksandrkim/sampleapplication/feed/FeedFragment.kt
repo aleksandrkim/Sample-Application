@@ -23,7 +23,6 @@ import kotlinx.android.synthetic.main.fragment_feed.*
 
 
 class FeedFragment : Fragment(), OnListItemClicked {
-//    private var listener: OnListItemClicked? = null
 
     private val feedFragmentVM by lazy {
         ViewModelProviders.of(this, VMFactoryWithRepository(Repository.getInstance
@@ -31,14 +30,6 @@ class FeedFragment : Fragment(), OnListItemClicked {
     }
 
     private val feedAdapter: FeedAdapter by lazy { FeedAdapter(null, this) }
-
-//    override fun onAttach(context: Context) {
-//        super.onAttach(context)
-//        if (context is OnListItemClicked)
-//            listener = context
-//        else
-//            throw RuntimeException(context.toString() + " must implement OnListItemClicked")
-//    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -81,11 +72,6 @@ class FeedFragment : Fragment(), OnListItemClicked {
             }
         })
     }
-
-//    override fun onDetach() {
-//        super.onDetach()
-//        listener = null
-//    }
 
     override fun onClick(id: Int) {
         val detailsFragment = DetailsFragment.newInstance(id)
