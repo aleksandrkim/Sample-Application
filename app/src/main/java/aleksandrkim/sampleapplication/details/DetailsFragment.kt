@@ -1,6 +1,5 @@
 package aleksandrkim.sampleapplication.details
 
-
 import aleksandrkim.sampleapplication.R
 import aleksandrkim.sampleapplication.db.AppDatabase
 import aleksandrkim.sampleapplication.db.models.Article
@@ -9,12 +8,12 @@ import aleksandrkim.sampleapplication.util.VMFactoryWithRepository
 import aleksandrkim.sampleapplication.util.reObserve
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
+import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import android.widget.Toast
 import kotlinx.android.synthetic.main.fragment_details.*
 
 class DetailsFragment : Fragment() {
@@ -25,10 +24,13 @@ class DetailsFragment : Fragment() {
             (AppDatabase.getInstance(requireContext().applicationContext)))).get(DetailsFragmentVM::class.java)
     }
 
+    private var starIcon: MenuItem? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        Log.d(TAG, "onCreate: ")
         super.onCreate(savedInstanceState)
         retainInstance = true
-        Log.d(TAG, "onCreate: ")
+        setHasOptionsMenu(true)
 
         arguments?.let {
             articleId = it.getInt(KEY_ARTICLE_ID)
@@ -50,7 +52,6 @@ class DetailsFragment : Fragment() {
     private fun subscribeToCurrentArticle() {
         detailsFragmentVM.currentArticle.reObserve(this, Observer {
             it?.let { bindArticleInfo(it) } ?: Log.d(TAG, "subscribeToCurrentArticle: null")
-
         })
     }
 
@@ -63,6 +64,30 @@ class DetailsFragment : Fragment() {
         url.text = article.url
         urlImage.text = article.urlToImage
         publishedAt.text = article.publishedAt
+        starIcon?.icon?.setTint(if (article.starred) Color.YELLOW else Color.WHITE)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        Log.d(TAG, "onCreateOptionsMenu: ")
+        menu.clear()
+        inflater.inflate(R.menu.details_menu, menu)
+        starIcon = menu.getItem(0)
+
+//        detailsFragmentVM.isStarred.reObserve(this, Observer {
+//            menu.getItem(0).icon.setTint(if (it == true) Color.YELLOW else Color.WHITE)
+//        })
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.menu_star -> {
+                detailsFragmentVM.toggleStar()
+                    .subscribe { Toast.makeText(requireContext(), "toggled", Toast.LENGTH_SHORT).show() }
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     companion object {

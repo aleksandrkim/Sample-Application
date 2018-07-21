@@ -2,7 +2,7 @@ package aleksandrkim.sampleapplication.feed
 
 import aleksandrkim.sampleapplication.R
 import aleksandrkim.sampleapplication.db.models.Article
-import aleksandrkim.sampleapplication.util.OnListItemClicked
+import aleksandrkim.sampleapplication.util.OnArticleClicked
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
@@ -13,8 +13,7 @@ import kotlinx.android.synthetic.main.feed_item.view.*
 
 
 class FeedAdapter(private var list: List<Article>?,
-                  private val clickListener: OnListItemClicked?)
-    : RecyclerView.Adapter<FeedAdapter.ViewHolder>() {
+                  private val clickListener: OnArticleClicked) : RecyclerView.Adapter<FeedAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.feed_item, parent, false)
@@ -24,8 +23,8 @@ class FeedAdapter(private var list: List<Article>?,
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         list?.get(position)?.let { article ->
             holder.bind(article)
-            holder.view.setOnClickListener ({
-                clickListener?.onClick(article.id)
+            holder.view.setOnClickListener({
+                clickListener(article.id)
             })
         }
     }

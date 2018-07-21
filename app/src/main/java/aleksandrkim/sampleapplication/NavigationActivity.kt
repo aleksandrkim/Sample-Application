@@ -7,13 +7,7 @@ import android.support.v4.app.Fragment
  */
 interface NavigationActivity {
 
-//    fun showFragmentByTag(tag: String)
-//
-//    fun hideFragmentByTag(tag: String)
-//    fun hideCurrentFragment()
-
     fun goToFeed()
-//    fun goToDetails(id: Int)
 
     fun launchFragment(fragment: Fragment, tag: String)
 

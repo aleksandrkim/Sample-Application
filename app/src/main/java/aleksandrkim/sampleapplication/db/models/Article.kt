@@ -10,14 +10,15 @@ import android.support.v7.util.DiffUtil
  */
 
 @Entity(tableName = Article.TABLE_NAME, indices = [Index("id")])
-data class Article(var author: String?,
+data class Article(val author: String?,
                    val title: String = "",
                    val description: String? = "",
                    val url: String,
                    val urlToImage: String?,
                    val publishedAt: String,
                    @PrimaryKey(autoGenerate = true)
-                   val id: Int) {
+                   val id: Int,
+                   var starred: Boolean = false) {
 
     fun sameAs(other: Article): Boolean =
         author == other.author && title == other.title && description == other.description &&

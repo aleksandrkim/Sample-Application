@@ -70,16 +70,6 @@ class MainActivity : AppCompatActivity(), NavigationActivity {
             .commit()
     }
 
-    private fun replaceFragmentWithBackstack(fragment: Fragment, tag: String) {
-        Log.d(TAG, "replaceFragmentWithBackstack: ")
-
-        supportFragmentManager.beginTransaction()
-            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-            .add(R.id.frame, fragment, tag)
-            .addToBackStack(tag)
-            .commit()
-    }
-
     private fun replaceFragmentNoBackStack(fragment: Fragment, tag: String) {
         supportFragmentManager.beginTransaction()
             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)

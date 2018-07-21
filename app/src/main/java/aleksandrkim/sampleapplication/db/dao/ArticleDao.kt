@@ -12,32 +12,32 @@ import android.arch.persistence.room.Transaction
 @Dao
 abstract class ArticleDao : BaseDao<Article>() {
 
-//    @Query("SELECT * FROM " + Article.TABLE_NAME + " ORDER BY createdTime DESC")
-//    abstract fun getNotesPagedLastCreatedFirst(): DataSource.Factory<Int, Note>
-
     @Query("SELECT * FROM " + Article.TABLE_NAME)
     abstract fun getAllFeed(): LiveData<List<Article>>
 
     @Query("SELECT * FROM " + Article.TABLE_NAME + " WHERE id = :id")
     abstract fun getById(id: Int): LiveData<Article?>
 
-//    @Query("SELECT * FROM " + Article.TABLE_NAME + " WHERE id = :id")
-//    abstract fun getArticleById(id: Int): Article?
-//
-//    @Query("SELECT * FROM " + Article.TABLE_NAME + " ORDER BY createdTime DESC LIMIT 1")
-//    abstract fun getLatestNote(): Article
-
     @Query("DELETE FROM " + Article.TABLE_NAME)
     abstract fun deleteAll()
 
+    @Query("DELETE FROM " + Article.TABLE_NAME + " WHERE starred = 0")
+    abstract fun deleteAllButStarred()
+
+    @Query("UPDATE " + Article.TABLE_NAME + " SET starred = :star  WHERE id = :id")
+    abstract fun starById(id: Int, star: Int)
+
     @Transaction
-    open fun cleanUpdate(list: List<Article>){
+    open fun cleanUpdate(list: List<Article>) {
         deleteAll()
         add(list)
     }
 
-//    @Query("DELETE FROM " + Article.TABLE_NAME + " WHERE id = :id")
-//    abstract fun delete(id: Int)
+    @Transaction
+    open fun cleanUpdateButStarred(list: List<Article>) {
+        deleteAllButStarred()
+        add(list)
+    }
 
     @Query("SELECT COUNT(*) FROM " + Article.TABLE_NAME)
     abstract override fun count(): Int

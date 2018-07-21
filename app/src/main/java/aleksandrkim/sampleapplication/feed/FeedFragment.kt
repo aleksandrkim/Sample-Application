@@ -5,7 +5,6 @@ import aleksandrkim.sampleapplication.R
 import aleksandrkim.sampleapplication.db.AppDatabase
 import aleksandrkim.sampleapplication.details.DetailsFragment
 import aleksandrkim.sampleapplication.repository.Repository
-import aleksandrkim.sampleapplication.util.OnListItemClicked
 import aleksandrkim.sampleapplication.util.VMFactoryWithRepository
 import aleksandrkim.sampleapplication.util.reObserve
 import android.arch.lifecycle.Observer
@@ -22,14 +21,14 @@ import android.widget.LinearLayout
 import kotlinx.android.synthetic.main.fragment_feed.*
 
 
-class FeedFragment : Fragment(), OnListItemClicked {
+class FeedFragment : Fragment() {
 
     private val feedFragmentVM by lazy {
         ViewModelProviders.of(this, VMFactoryWithRepository(Repository.getInstance
             (AppDatabase.getInstance(requireContext().applicationContext)))).get(FeedFragmentVM::class.java)
     }
 
-    private val feedAdapter: FeedAdapter by lazy { FeedAdapter(null, this) }
+    private val feedAdapter: FeedAdapter by lazy { FeedAdapter(null, { id -> onClick(id) }) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,7 +72,7 @@ class FeedFragment : Fragment(), OnListItemClicked {
         })
     }
 
-    override fun onClick(id: Int) {
+    fun onClick(id: Int) {
         val detailsFragment = DetailsFragment.newInstance(id)
         (requireActivity() as NavigationActivity).launchFragment(detailsFragment, DetailsFragment.TAG)
     }

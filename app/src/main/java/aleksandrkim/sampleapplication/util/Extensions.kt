@@ -25,3 +25,7 @@ fun <T> LiveData<T>.reObserve(owner: LifecycleOwner, observer: Observer<T>) {
     observe(owner, observer)
 }
 //endregion
+
+fun Boolean.toSqlInt() = if (this) 1 else 0
+
+typealias OnArticleClicked = (newSize: Int) -> Unit
