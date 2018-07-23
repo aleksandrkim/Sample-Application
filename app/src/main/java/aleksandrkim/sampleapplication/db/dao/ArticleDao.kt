@@ -1,6 +1,6 @@
 package aleksandrkim.sampleapplication.db.dao
 
-import aleksandrkim.sampleapplication.db.models.Article
+import aleksandrkim.sampleapplication.db.entities.Article
 import android.arch.lifecycle.LiveData
 import android.arch.persistence.room.Dao
 import android.arch.persistence.room.Query

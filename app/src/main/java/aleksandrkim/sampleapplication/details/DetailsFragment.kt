@@ -2,7 +2,7 @@ package aleksandrkim.sampleapplication.details
 
 import aleksandrkim.sampleapplication.R
 import aleksandrkim.sampleapplication.db.AppDatabase
-import aleksandrkim.sampleapplication.db.models.Article
+import aleksandrkim.sampleapplication.db.entities.Article
 import aleksandrkim.sampleapplication.repository.Repository
 import aleksandrkim.sampleapplication.util.VMFactoryWithRepository
 import aleksandrkim.sampleapplication.util.reObserve

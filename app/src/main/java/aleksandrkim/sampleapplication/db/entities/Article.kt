@@ -1,4 +1,4 @@
-package aleksandrkim.sampleapplication.db.models
+package aleksandrkim.sampleapplication.db.entities
 
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.Index

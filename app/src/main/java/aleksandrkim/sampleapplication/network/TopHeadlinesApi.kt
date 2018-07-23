@@ -1,7 +1,8 @@
 package aleksandrkim.sampleapplication.network
 
-import aleksandrkim.sampleapplication.db.models.TopHeadline
+import aleksandrkim.sampleapplication.network.models.TopHeadlinesResponse
 import io.reactivex.Single
+import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -12,12 +13,12 @@ import retrofit2.http.Query
 interface TopHeadlinesApi {
 
     @GET("top-headlines")
-    fun getBy(@Query("country") country: String, @Query("category") category: String, @Query("q") phrase: String): Single<TopHeadline>
+    fun getBy(@Query("country") country: String, @Query("category") category: String, @Query("q") phrase: String): Single<TopHeadlinesResponse>
 
     @GET("top-headlines")
-    fun getAll(@Query("language") language: String): Single<TopHeadline>
+    fun getAll(@Query("language") language: String): Single<TopHeadlinesResponse>
 
     @GET("top-headlines?language=en")
-    fun getAllEng(): Single<TopHeadline>
+    fun getAllEng(): Single<Response<TopHeadlinesResponse>>
 
 }

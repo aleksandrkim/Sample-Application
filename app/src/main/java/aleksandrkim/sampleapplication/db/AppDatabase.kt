@@ -2,7 +2,7 @@ package aleksandrkim.sampleapplication.db
 
 import aleksandrkim.sampleapplication.BuildConfig
 import aleksandrkim.sampleapplication.db.dao.ArticleDao
-import aleksandrkim.sampleapplication.db.models.Article
+import aleksandrkim.sampleapplication.db.entities.Article
 import aleksandrkim.sampleapplication.util.SingletonHolder
 import android.arch.persistence.room.Database
 import android.arch.persistence.room.Room

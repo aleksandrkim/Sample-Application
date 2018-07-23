@@ -1,4 +1,4 @@
-package aleksandrkim.sampleapplication.db.models
+package aleksandrkim.sampleapplication.db.entities
 
 /**
  * Created by Aleksandr Kim on 20 Jul, 2018 9:00 PM for SampleApplication

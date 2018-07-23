@@ -5,5 +5,6 @@ package aleksandrkim.sampleapplication.network
  */
 object ApiConstants {
     var baseUrl = "https://newsapi.org/v2/"
-    var key = "a2362d2068b54a2aad9a859a7fe789d7"
+//    var key = "a2362d2068b54a2aad9a859a7fe789d7"
+    var key = "a2362d2068b54a2aad9a859a7fe789d"
 }

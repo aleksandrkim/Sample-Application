@@ -1,6 +1,6 @@
 package aleksandrkim.sampleapplication.feed
 
-import aleksandrkim.sampleapplication.db.models.Article
+import aleksandrkim.sampleapplication.db.entities.Article
 import aleksandrkim.sampleapplication.repository.Repository
 import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.LiveData

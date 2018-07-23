@@ -2,9 +2,12 @@ package aleksandrkim.sampleapplication.repository
 
 import aleksandrkim.sampleapplication.db.AppDatabase
 import aleksandrkim.sampleapplication.db.dao.ArticleDao
-import aleksandrkim.sampleapplication.db.models.Article
+import aleksandrkim.sampleapplication.db.entities.Article
 import aleksandrkim.sampleapplication.network.ServiceProvider
 import aleksandrkim.sampleapplication.network.TopHeadlinesApi
+import aleksandrkim.sampleapplication.network.models.ProcessedResponse
+import aleksandrkim.sampleapplication.network.models.TopHeadlinesResponse
+import aleksandrkim.sampleapplication.util.ResponseValidator
 import aleksandrkim.sampleapplication.util.SingletonHolder
 import aleksandrkim.sampleapplication.util.toSqlInt
 import android.arch.lifecycle.LiveData
@@ -30,12 +33,31 @@ class Repository(private val appDatabase: AppDatabase) {
     fun fetchNewArticles() {
         Log.d(TAG, "fetchNewArticles: ")
         topHeadlinesApi.getAllEng()
-            .map { t -> t.articles }
+            .map(ResponseValidator())
+            .map { t ->
+                if (t is ProcessedResponse.SuccessfulResponse) {
+                    Log.d(TAG, "fetchNewArticles: success mapped")
+                    t.content
+                }
+                else {
+                    Log.d(TAG, "fetchNewArticles: error mapped")
+                    t
+                }
+            }
             .subscribeOn(Schedulers.io())
-            .subscribe({ list ->
-                Log.d(TAG, "fetchNewArticles: ")
-                updateArticlesDb(list)
-            })
+            .subscribe(
+                { list ->
+                    if (list is TopHeadlinesResponse) {
+                        Log.d(TAG, "fetchNewArticles success: " + list.toString())
+                        updateArticlesDb(list.articles!!)
+                    } else {
+                        Log.d(TAG, "fetchNewArticles error: " + list.toString())
+                    }
+                },
+                { throwable ->
+                    Log.d(TAG, "fetchNewArticles exc:\n", throwable)
+                }
+            )
     }
 
     fun getArticleById(id: Int): LiveData<Article?> {
@@ -53,7 +75,6 @@ class Repository(private val appDatabase: AppDatabase) {
         return Completable.fromCallable { articleDao.starById(id, boolean.toSqlInt()) }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-//        articleDao.starById(id, boolean.toSqlInt())
     }
 
     companion object : SingletonHolder<AppDatabase, Repository>(::Repository) {

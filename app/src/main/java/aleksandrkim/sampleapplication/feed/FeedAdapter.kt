@@ -1,7 +1,7 @@
 package aleksandrkim.sampleapplication.feed
 
 import aleksandrkim.sampleapplication.R
-import aleksandrkim.sampleapplication.db.models.Article
+import aleksandrkim.sampleapplication.db.entities.Article
 import aleksandrkim.sampleapplication.util.OnArticleClicked
 import android.support.v7.widget.RecyclerView
 import android.util.Log
