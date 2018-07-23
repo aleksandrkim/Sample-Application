@@ -20,7 +20,7 @@ class ResponseValidator<T> : io.reactivex.functions.Function<Response<T>, Proces
 
                 200 -> ProcessedResponse.SuccessfulResponse(response.body()!!)
 
-                400 -> ProcessedResponse.ParameterInvalid
+                400 -> ProcessedResponse.BadRequest
 
                 401 -> ProcessedResponse.ApiKeyInvalid
 
@@ -48,7 +48,7 @@ class ResponseValidator<T> : io.reactivex.functions.Function<Response<T>, Proces
 //
 //                "unexpectedError" -> ProcessedResponse.UnexpectedError
 
-                else -> ProcessedResponse.UnknownError(response.body()?.code ?: "unknown", response.body()?.message ?: "unknown")
+                else -> ProcessedResponse.UnknownError(response.code().toString(), response.message() ?: "unknown")
             }
 
     }

@@ -6,13 +6,13 @@ import aleksandrkim.sampleapplication.db.entities.Article
 import aleksandrkim.sampleapplication.network.ServiceProvider
 import aleksandrkim.sampleapplication.network.TopHeadlinesApi
 import aleksandrkim.sampleapplication.network.models.ProcessedResponse
-import aleksandrkim.sampleapplication.network.models.TopHeadlinesResponse
 import aleksandrkim.sampleapplication.util.ResponseValidator
 import aleksandrkim.sampleapplication.util.SingletonHolder
 import aleksandrkim.sampleapplication.util.toSqlInt
 import android.arch.lifecycle.LiveData
 import android.util.Log
 import io.reactivex.Completable
+import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
@@ -30,34 +30,22 @@ class Repository(private val appDatabase: AppDatabase) {
         return articleDao.getAllFeed()
     }
 
-    fun fetchNewArticles() {
+    fun fetchNewArticles(): Single<ProcessedResponse> {
         Log.d(TAG, "fetchNewArticles: ")
-        topHeadlinesApi.getAllEng()
+        return topHeadlinesApi.getAllEng()
             .map(ResponseValidator())
-            .map { t ->
-                if (t is ProcessedResponse.SuccessfulResponse) {
-                    Log.d(TAG, "fetchNewArticles: success mapped")
-                    t.content
-                }
-                else {
-                    Log.d(TAG, "fetchNewArticles: error mapped")
-                    t
-                }
-            }
+//            .map { t ->
+//                if (t is ProcessedResponse.SuccessfulResponse) {
+//                    Log.d(TAG, "fetchNewArticles: success mapped")
+//                    t.content
+//                }
+//                else {
+//                    Log.d(TAG, "fetchNewArticles: error mapped")
+//                    t
+//                }
+//            }
             .subscribeOn(Schedulers.io())
-            .subscribe(
-                { list ->
-                    if (list is TopHeadlinesResponse) {
-                        Log.d(TAG, "fetchNewArticles success: " + list.toString())
-                        updateArticlesDb(list.articles!!)
-                    } else {
-                        Log.d(TAG, "fetchNewArticles error: " + list.toString())
-                    }
-                },
-                { throwable ->
-                    Log.d(TAG, "fetchNewArticles exc:\n", throwable)
-                }
-            )
+            .observeOn(AndroidSchedulers.mainThread())
     }
 
     fun getArticleById(id: Int): LiveData<Article?> {
@@ -65,7 +53,7 @@ class Repository(private val appDatabase: AppDatabase) {
         return articleDao.getById(id)
     }
 
-    private fun updateArticlesDb(list: List<Article>) {
+    fun updateArticlesDb(list: List<Article>) {
         Log.d(TAG, "updateArticlesDb: " + list.size)
         articleDao.cleanUpdateButStarred(list)
     }

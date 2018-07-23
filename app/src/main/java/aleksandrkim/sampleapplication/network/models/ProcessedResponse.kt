@@ -10,23 +10,25 @@ sealed class ProcessedResponse {
     data class UnknownError(val code: String = "unknown", val message: String = "service is not responding") :
         ProcessedResponse()
 
-    object ApiKeyDisabled: ProcessedResponse()
-
-    object ApiKeyExhausted: ProcessedResponse()
+//    object ApiKeyDisabled: ProcessedResponse()
+//
+//    object ApiKeyExhausted: ProcessedResponse()
 
     object ApiKeyInvalid: ProcessedResponse()
 
-    object ApiKeyMissing: ProcessedResponse()
+//    object ApiKeyMissing: ProcessedResponse()
 
-    object ParameterInvalid: ProcessedResponse()
+//    object ParameterInvalid: ProcessedResponse()
 
-    object ParametersMissing: ProcessedResponse()
+    object BadRequest: ProcessedResponse()
+
+//    object ParametersMissing: ProcessedResponse()
 
     object RateLimited: ProcessedResponse()
 
-    object SourcesTooMany: ProcessedResponse()
+//    object SourcesTooMany: ProcessedResponse()
 
-    object SourceDoesNotExist: ProcessedResponse()
+//    object SourceDoesNotExist: ProcessedResponse()
 
     object UnexpectedError: ProcessedResponse()
 
