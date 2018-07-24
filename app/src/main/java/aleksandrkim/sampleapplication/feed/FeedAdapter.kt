@@ -11,21 +11,17 @@ import android.view.ViewGroup
 import android.widget.TextView
 import kotlinx.android.synthetic.main.feed_item.view.*
 
-
 class FeedAdapter(private var list: List<Article>?,
                   private val clickListener: OnArticleClicked) : RecyclerView.Adapter<FeedAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.feed_item, parent, false)
-        return ViewHolder(view)
+        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.feed_item, parent, false))
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         list?.get(position)?.let { article ->
             holder.bind(article)
-            holder.view.setOnClickListener({
-                clickListener(article.id)
-            })
+            holder.view.setOnClickListener { clickListener(article.id) }
         }
     }
 

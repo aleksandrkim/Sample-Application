@@ -38,6 +38,7 @@ class MainActivity : AppCompatActivity(), NavigationActivity {
             }
             R.id.navigation_dashboard -> {
                 shortToast.setTextAndShow(R.string.title_dashboard)
+                clearBackStack()
 //                hideCurrentFragment()
                 true
             }
@@ -75,6 +76,10 @@ class MainActivity : AppCompatActivity(), NavigationActivity {
             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
             .replace(R.id.frame, fragment, tag)
             .commit()
+    }
+
+    override fun showShortToast(text: String) {
+        shortToast.setTextAndShow(text)
     }
 
     override fun onSaveInstanceState(outState: Bundle?, outPersistentState: PersistableBundle?) {

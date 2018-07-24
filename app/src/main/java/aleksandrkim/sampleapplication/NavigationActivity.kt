@@ -11,4 +11,6 @@ interface NavigationActivity {
 
     fun launchFragment(fragment: Fragment, tag: String)
 
+    fun showShortToast(text: String)
+
 }

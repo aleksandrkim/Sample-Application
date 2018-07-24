@@ -4,6 +4,8 @@ import aleksandrkim.sampleapplication.NavigationActivity
 import aleksandrkim.sampleapplication.R
 import aleksandrkim.sampleapplication.db.AppDatabase
 import aleksandrkim.sampleapplication.details.DetailsFragment
+import aleksandrkim.sampleapplication.network.models.ProcessedResponse
+import aleksandrkim.sampleapplication.network.models.TopHeadlinesResponse
 import aleksandrkim.sampleapplication.repository.Repository
 import aleksandrkim.sampleapplication.util.VMFactoryWithRepository
 import aleksandrkim.sampleapplication.util.reObserve
@@ -19,6 +21,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import kotlinx.android.synthetic.main.fragment_feed.*
+import java.net.ConnectException
 
 
 class FeedFragment : Fragment() {
@@ -28,7 +31,9 @@ class FeedFragment : Fragment() {
             (AppDatabase.getInstance(requireContext().applicationContext)))).get(FeedFragmentVM::class.java)
     }
 
-    private val feedAdapter: FeedAdapter by lazy { FeedAdapter(null, { id -> onClick(id) }) }
+    private lateinit var navigationActivity: NavigationActivity
+
+    private val feedAdapter: FeedAdapter by lazy { FeedAdapter(null, { id -> onArticleClicked(id) }) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,7 +44,16 @@ class FeedFragment : Fragment() {
     }
 
     private fun init() {
-        feedFragmentVM.fetchNewArticles()
+        feedFragmentVM.fetchNewArticles().subscribe(
+            { response -> handleResponse(response) },
+            { error ->
+                if (error.cause is ConnectException) handleResponse(ProcessedResponse.ConnectionError)
+                else {
+                    handleResponse(ProcessedResponse.UnknownError(error.message?: "error", error.stackTrace.toString()))
+                    Log.d(TAG, "fetchNewArticles error: ", error)
+                }
+            }
+        )
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -51,6 +65,7 @@ class FeedFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         Log.d(TAG, "onActivityCreated: ")
         super.onActivityCreated(savedInstanceState)
+        navigationActivity = requireActivity() as NavigationActivity
         setRecycler()
         subscribeToFeed()
     }
@@ -72,14 +87,30 @@ class FeedFragment : Fragment() {
         })
     }
 
-    fun onClick(id: Int) {
-        val detailsFragment = DetailsFragment.newInstance(id)
-        (requireActivity() as NavigationActivity).launchFragment(detailsFragment, DetailsFragment.TAG)
+    private fun onArticleClicked(id: Int) {
+        navigationActivity.launchFragment(DetailsFragment.newInstance(id), DetailsFragment.TAG)
+    }
+
+    private fun handleResponse(processedResponse: ProcessedResponse) {
+        navigationActivity.showShortToast(when (processedResponse) {
+            is ProcessedResponse.SuccessfulResponse -> "Fetched ${(processedResponse.content as TopHeadlinesResponse).articles!!.size} articles"
+
+            is ProcessedResponse.RateLimited -> "Rate Limited"
+
+            is ProcessedResponse.ApiKeyInvalid -> "API key is invalid"
+
+            is ProcessedResponse.BadRequest -> "Bad request"
+
+            is ProcessedResponse.UnexpectedError -> "Unexpected error"
+
+            is ProcessedResponse.ConnectionError -> "Connection error"
+
+            is ProcessedResponse.UnknownError -> "Unknown error has occurred"
+        })
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         Log.d(TAG, "onSaveInstanceState: ")
-
         super.onSaveInstanceState(outState)
     }
 

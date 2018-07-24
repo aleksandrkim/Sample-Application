@@ -11,11 +11,13 @@ import android.widget.Toast
 
 //region Toast
 fun Toast.setTextAndShow(text: String) {
-    setText(text); show()
+    setText(text)
+    show()
 }
 
 fun Toast.setTextAndShow(textId: Int) {
-    setText(textId); show()
+    setText(textId)
+    show()
 }
 //endregion
 
@@ -28,4 +30,4 @@ fun <T> LiveData<T>.reObserve(owner: LifecycleOwner, observer: Observer<T>) {
 
 fun Boolean.toSqlInt() = if (this) 1 else 0
 
-typealias OnArticleClicked = (newSize: Int) -> Unit
+typealias OnArticleClicked = (id: Int) -> Unit

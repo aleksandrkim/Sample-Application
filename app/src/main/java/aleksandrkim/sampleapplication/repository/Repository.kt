@@ -6,6 +6,7 @@ import aleksandrkim.sampleapplication.db.entities.Article
 import aleksandrkim.sampleapplication.network.ServiceProvider
 import aleksandrkim.sampleapplication.network.TopHeadlinesApi
 import aleksandrkim.sampleapplication.network.models.ProcessedResponse
+import aleksandrkim.sampleapplication.network.models.TopHeadlinesResponse
 import aleksandrkim.sampleapplication.util.ResponseValidator
 import aleksandrkim.sampleapplication.util.SingletonHolder
 import aleksandrkim.sampleapplication.util.toSqlInt
@@ -34,17 +35,13 @@ class Repository(private val appDatabase: AppDatabase) {
         Log.d(TAG, "fetchNewArticles: ")
         return topHeadlinesApi.getAllEng()
             .map(ResponseValidator())
-//            .map { t ->
-//                if (t is ProcessedResponse.SuccessfulResponse) {
-//                    Log.d(TAG, "fetchNewArticles: success mapped")
-//                    t.content
-//                }
-//                else {
-//                    Log.d(TAG, "fetchNewArticles: error mapped")
-//                    t
-//                }
-//            }
             .subscribeOn(Schedulers.io())
+            .doOnSuccess{ response ->
+                if (response is ProcessedResponse.SuccessfulResponse) {
+                    Log.d(TAG, "fetchNewArticles success: " + response.toString())
+                    updateArticlesDb((response.content as TopHeadlinesResponse).articles!!)
+                }
+            }
             .observeOn(AndroidSchedulers.mainThread())
     }
 
@@ -53,7 +50,7 @@ class Repository(private val appDatabase: AppDatabase) {
         return articleDao.getById(id)
     }
 
-    fun updateArticlesDb(list: List<Article>) {
+    private fun updateArticlesDb(list: List<Article>) {
         Log.d(TAG, "updateArticlesDb: " + list.size)
         articleDao.cleanUpdateButStarred(list)
     }

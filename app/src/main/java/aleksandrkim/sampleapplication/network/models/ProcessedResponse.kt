@@ -32,4 +32,6 @@ sealed class ProcessedResponse {
 
     object UnexpectedError: ProcessedResponse()
 
+    object ConnectionError: ProcessedResponse()
+
 }
